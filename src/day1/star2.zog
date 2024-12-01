@@ -1,0 +1,70 @@
+namespace aoc_d1
+
+fn load() {
+  input = include "inputs"
+  parse(input)
+
+  list1 = ~/parse/list1
+  list2 = ~/parse/list2
+
+  tellraw @a "Advent of Code - Day 1 (Star 2)"
+
+  $sum = 0
+  
+  while list1 {
+    $current = list1[0]
+    data remove storage &{fn} list1[0]
+
+    $count = count_occurrences('"aoc_d1:load list2"', $current)
+
+    $sum += $count * $current
+  }
+}
+
+fn %count_occurrences(%list, %value) {
+  `return run execute if data storage %list[{value: %value}]`
+}
+
+fn parse(input) {
+  list1 = []
+  list2 = []
+
+  while input {
+    current = input[..1]
+    num1 = '""'
+    num2 = '""'
+
+    while current != '" "' {
+      num1 = concat(num1, current)
+      input = input[1..]
+      current = input[..1]
+    }
+
+    input = input[1..]
+    current = input[..1]
+
+    while current != '";"' {
+      num2 = concat(num2, current)
+      input = input[1..]
+      current = input[..1]
+    }
+
+    input = input[1..]
+
+    int1 = to_i(num1)
+    int2 = to_i(num2)
+
+    data modify storage &{fn} list1 append from storage &{fn} int1
+
+    data modify storage &{fn} list2 append value {}
+    data modify storage &{fn} list2[-1].value set from storage &{fn} int2
+  }
+}
+
+fn concat(%left, %right) {
+  data modify storage &{fn} return set value "%left%right"
+}
+
+fn %to_i(%string) {
+  `return %string`
+}

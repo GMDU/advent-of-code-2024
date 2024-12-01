@@ -1,0 +1,119 @@
+namespace aoc_d1
+
+fn load() {
+  input = include "inputs"
+  parse(input)
+
+  list1 = ~/parse/list1
+  list2 = ~/parse/list2
+
+  tellraw @a "Advent of Code - Day 1 (Star 1)"
+
+  $sum = 0
+  run()
+}
+
+fn run() {
+  $runs = 3
+
+  while $runs {
+    if ~/load/list1 {
+      $idx1 = get_lowest(~/load/list1)
+      $idx2 = get_lowest(~/load/list2)
+
+      $~/load/sum += abs(
+        get_at_index('"aoc_d1:load list1"', $idx1) - get_at_index('"aoc_d1:load list2"', $idx2)
+      )
+
+      remove_at_index('"aoc_d1:load list1"', $idx1)
+      remove_at_index('"aoc_d1:load list2"', $idx2)
+    }
+
+    $runs -= 1
+  }
+
+  if ~/load/list1 {
+    schedule &{run()} 1t
+  } else {
+    tellraw @a "DONE!"
+  }
+}
+
+fn parse(input) {
+  list1 = []
+  list2 = []
+
+  while input {
+    current = input[..1]
+    num1 = '""'
+    num2 = '""'
+
+    while current != '" "' {
+      num1 = concat(num1, current)
+      input = input[1..]
+      current = input[..1]
+    }
+
+    input = input[1..]
+    current = input[..1]
+
+    while current != '";"' {
+      num2 = concat(num2, current)
+      input = input[1..]
+      current = input[..1]
+    }
+
+    input = input[1..]
+
+    int1 = to_i(num1)
+    int2 = to_i(num2)
+
+    data modify storage &{fn} list1 append from storage &{fn} int1
+    data modify storage &{fn} list2 append from storage &{fn} int2
+  }
+}
+
+fn concat(%left, %right) {
+  data modify storage &{fn} return set value "%left%right"
+}
+
+fn %to_i(%string) {
+  `return %string`
+}
+
+fn remove_at_index(%list, %index) {
+  data remove storage %list[%index]
+}
+
+fn %get_at_index(%list, %index) {
+  `return run data get storage %list[%index]`
+}
+
+fn %abs($n) {
+  if $n < 0 {
+    $n *= -1
+  }
+
+  return $n
+}
+
+fn get_lowest(list) {
+  $lowest = list[0]
+  $lowest_idx = 0
+  $current_idx = 0
+
+  while list {
+    $current_value = list[0]
+
+    if $current_value < $lowest {
+      $lowest = $current_value
+      $lowest_idx = $current_idx
+    }
+
+    $current_idx += 1
+
+    data remove storage &{fn} list[0]
+  }
+
+  return $lowest_idx
+}
