@@ -1,4 +1,4 @@
-namespace aoc_d1
+namespace aoc_day1
 
 fn load() {
   input = include "inputs"
@@ -22,11 +22,11 @@ fn run() {
       $idx2 = get_lowest(~/load/list2)
 
       $~/load/sum += abs(
-        get_at_index('"aoc_d1:load list1"', $idx1) - get_at_index('"aoc_d1:load list2"', $idx2)
+        get_at_index('"aoc_day1:load list1"', $idx1) - get_at_index('"aoc_day1:load list2"', $idx2)
       )
 
-      remove_at_index('"aoc_d1:load list1"', $idx1)
-      remove_at_index('"aoc_d1:load list2"', $idx2)
+      remove_at_index('"aoc_day1:load list1"', $idx1)
+      remove_at_index('"aoc_day1:load list2"', $idx2)
     }
 
     $runs -= 1

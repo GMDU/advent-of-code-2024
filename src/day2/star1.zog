@@ -1,0 +1,88 @@
+namespace aoc_day2
+
+fn load() {
+  tellraw @a "Advent of Code - Day 2 (Star 1)"
+
+  reports = parse(include "inputs")
+  $num_safe = 0
+
+  while reports {
+    report = reports[0]
+
+    if is_safe(report) {
+      $num_safe += 1
+    }
+
+    data remove storage &{fn} reports[0]
+  }
+
+  print($num_safe)
+}
+
+fn %len(list) {
+  return list
+}
+
+fn is_safe(report) {
+  increasing = report[0] < report[1]
+
+  output = true
+
+  while len(report) > 1 {
+    if !output { return }
+    $diff = report[1] - report[0]
+
+    if $diff == 0 { output = false }
+    if $diff < 0 && increasing { output = false }
+    if $diff > 0 && !increasing { output = false }
+    if $diff < -3 || $diff > 3 { output = false }
+
+    data remove storage &{fn} report[0]
+  }
+
+  return output
+}
+
+fn print(storage) {
+  tellraw @a {"storage": "&{fn}", "nbt": "storage"}
+}
+
+fn %to_i(%string) {
+  `return %string`
+}
+
+fn concat(%left, %right) {
+  data modify storage &{fn} return set value "%left%right"
+}
+
+fn parse(input) {
+  output = []
+  list = []
+
+  while input {
+    num = '""'
+    current = input[..1]
+
+    while current != '" "' {
+      if current == '";"' {
+        `return -1`
+      }
+
+      num = concat(num, current)
+      input = input[1..]
+      current = input[..1]
+    }
+
+    int = to_i(num)
+    data modify storage &{fn} list append from storage &{fn} int
+
+    if current == '";"' {
+      data modify storage &{fn} output append from storage &{fn} list
+      list = []
+    }
+
+    input = input[1..]
+  }
+
+  return output
+}
