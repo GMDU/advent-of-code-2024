@@ -1,4 +1,4 @@
-namespace aoc_d1
+namespace aoc_day1
 
 fn load() {
   input = include "inputs"
@@ -15,7 +15,7 @@ fn load() {
     $current = list1[0]
     data remove storage &{fn} list1[0]
 
-    $count = count_occurrences('"aoc_d1:load list2"', $current)
+    $count = count_occurrences('"aoc_day1:load list2"', $current)
 
     $sum += $count * $current
   }
